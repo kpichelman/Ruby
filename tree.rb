@@ -6,17 +6,20 @@ class Tree
   #   @node_name = name
   # end
 
-  def initialize(hash)
-    @children = hash.values
-    @node_name = hash.keys.to_s
+  def initialize(initHash)
+    @children = initHash[initHash.keys.to_s]
+    @node_name = initHash.keys.to_s
   end
 
   def visit_all(&block)
-    puts "1"
     visit &block
-    puts "2"
-    children.each {|c| c.visit_all &block}
-    puts "3"
+    puts "_name: " + node_name.to_s
+    puts "children.keys:" + children.keys.to_s 
+    children.keys.each {|c|
+      puts "***" + c.to_s
+      puts "***" + children[c].to_s
+      newTree = Tree.new(children[c]) 
+      newTree.visit_all &block }
   end
 
   def visit(&block)
@@ -34,7 +37,10 @@ end
 # puts "Visiting entire tree"
 # ruby_tree.visit_all {|node| puts node.node_name}
 
-puts "Initializer new accepts a nested structure of hashes"
+puts "Initializer now accepts a nested structure of hashes"
 familyTree = {'grandpa' => {'dad' => {'child1' => {}, 'child2' => {} }, 'uncle' => {'child3' => {}, 'child4' => {} }}}
 hash_tree = Tree.new(familyTree)
+puts "hash_tree created!"
+
 hash_tree.visit_all {|node| puts node.node_name}
+puts "hash_tree visited all!"
