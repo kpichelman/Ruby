@@ -31,37 +31,40 @@ module ActsAsCsv
 end
 
 class CVS
-    include ActsAsCsv
-    
+    include ActsAsCsv    
     acts_as_csv
     
-    def self.method_missing name, *argu, &block
-      puts "found internal method_missing"
-    end
-    
     # New method added to return the items in column "key"
-    def method_missing key, *argu, &block
-        
-        if key.to_s == "each"            
-            # colToReturn.each { |i| csv_contents.each { |c| puts c[i] } }
+    def method_missing key, *args, &block        
+        if key.to_s == "each"
             csv_contents.each &block
+
+            #for index in 0 ... csv_contents.size
+            #    puts "csv_contents[#{index}] = #{csv_contents[index].inspect}"
+            #    csv_contents[index].each &block
+            #end
+            
         else
-            colToReturn = []
             # array of columns we need to output
-            headers.each_with_index {|h, index| if h.to_s == key.to_s : colToReturn = colToReturn + Array[index] end}
-            colToReturn.each {|a| puts a.to_s}
-            ## puts "Stupid! Method " + key.to_s + " does not exist!"
+            #colToReturn.each {|a| puts a.to_s}
+            puts "Stupid! Method " + key.to_s + " does not exist!"
         end
     end
     # --- end of new code ---
+    
 end
 
 class Array
-    def method_missing key, *argu, &block
-        puts "hi"
+    include ActsAsCsv
+    
+    def method_missing key, *args, &block
+        #puts headers.to_s
+        # col_array.each {|x| puts self[x]}
+        # puts self[0]
+        #puts headers
+        return key.to_s
     end
 end
-
 
 m = CVS.new
 #puts m.headers.inspect
